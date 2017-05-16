@@ -42,7 +42,8 @@ class Main extends Component {
 		super(props);
 
 		this.state = {
-			cmd : ""
+			cmd : "",
+			error : ""
 		}
 		//events
 		this.changeInput = this.changeInputH.bind(this)
@@ -67,6 +68,7 @@ class Main extends Component {
 
 	//catch keypress
 	changeInputH(e){
+		this.setState({error : ""});
 		let val = e.target.value;
 		this.setState({cmd : val});
 	}
@@ -77,11 +79,31 @@ class Main extends Component {
 			let arr2 = [];
 			switch(arr[0].toLowerCase()){
 				case "place":
-					arr2 = arr[1].split(",");
-					if(arr2.length == 3)
-					this.props.placeRobot(this.props.coord, this.props.face.toLowerCase()[0], arr2);
+					if(!arr[1]) this.setState({error : "place commands needs parameters"});
+					else{
+						arr2 = arr[1].split(",");
+						if(arr2[0] > 4 || arr2[1] > 4 || arr2[0] < 0 || arr2[0] < 0)
+							this.setState({error : "X and Y coordinates must be between 0 and 4"});
+						else{
+							if(arr2.length == 3)
+								this.props.placeRobot(
+									this.props.coord, 
+									this.props.face.toLowerCase()[0], 
+									arr2
+								);
+							else this.setState({error : "place commands needs 3 parameters e.g. 0,0,w"});
+						}
+					}
 				break;
 				case "move":
+					if(this.props.face.toLowerCase()[0] == "n" && this.props.coord[1] == 4)
+						this.setState({error : "robot will fall"});
+					if(this.props.face.toLowerCase()[0] == "s" && this.props.coord[1] == 0)
+						this.setState({error : "robot will fall"});
+					if(this.props.face.toLowerCase()[0] == "w" && this.props.coord[0] == 4)
+						this.setState({error : "robot will fall"});
+					if(this.props.face.toLowerCase()[0] == "e" && this.props.coord[0] == 0)
+						this.setState({error : "robot will fall"});
 					this.props.moveRobot(this.props.face.toLowerCase()[0]);
 				break;
 				case "left":
@@ -100,13 +122,13 @@ class Main extends Component {
 
 	render() {
 		let { coord, face } = this.props
-		let { cmd } = this.state
+		let { cmd, error } = this.state
 		let { changeInput, keyPress, inputType } = this
 		return (
 			<div>
 				<MainC 
 				coord={coord} face={face}
-				cmd={cmd}
+				cmd={cmd} error={error}
 				changeInput={changeInput} keyPress={keyPress}
 				inputType={inputType} />
 			</div>

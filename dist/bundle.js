@@ -25402,7 +25402,8 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 var Actions = function Actions(_ref) {
 	var cmd = _ref.cmd,
 	    changeInput = _ref.changeInput,
-	    keyPress = _ref.keyPress;
+	    keyPress = _ref.keyPress,
+	    error = _ref.error;
 	return _react2.default.createElement(
 		"div",
 		null,
@@ -25419,6 +25420,11 @@ var Actions = function Actions(_ref) {
 				{ className: "bot" },
 				_react2.default.createElement("input", { placeholder: "Type commands", value: cmd,
 					onChange: changeInput, onKeyUp: keyPress })
+			),
+			_react2.default.createElement(
+				"div",
+				{ className: "error" },
+				error
 			),
 			_react2.default.createElement(
 				"div",
@@ -25511,6 +25517,7 @@ var Main = function Main(_ref) {
 	var coord = _ref.coord,
 	    face = _ref.face,
 	    cmd = _ref.cmd,
+	    error = _ref.error,
 	    inputType = _ref.inputType,
 	    changeInput = _ref.changeInput,
 	    keyPress = _ref.keyPress;
@@ -25530,7 +25537,7 @@ var Main = function Main(_ref) {
 		_react2.default.createElement(
 			'div',
 			{ className: 'action' },
-			_react2.default.createElement(_Actions2.default, { cmd: cmd, changeInput: changeInput, keyPress: keyPress })
+			_react2.default.createElement(_Actions2.default, { cmd: cmd, error: error, changeInput: changeInput, keyPress: keyPress })
 		)
 	);
 };
@@ -25608,7 +25615,8 @@ var Main = function (_Component) {
 		var _this = _possibleConstructorReturn(this, (Main.__proto__ || Object.getPrototypeOf(Main)).call(this, props));
 
 		_this.state = {
-			cmd: ""
+			cmd: "",
+			error: ""
 		};
 		//events
 		_this.changeInput = _this.changeInputH.bind(_this);
@@ -25639,6 +25647,7 @@ var Main = function (_Component) {
 	}, {
 		key: 'changeInputH',
 		value: function changeInputH(e) {
+			this.setState({ error: "" });
 			var val = e.target.value;
 			this.setState({ cmd: val });
 		}
@@ -25651,10 +25660,18 @@ var Main = function (_Component) {
 				var arr2 = [];
 				switch (arr[0].toLowerCase()) {
 					case "place":
-						arr2 = arr[1].split(",");
-						if (arr2.length == 3) this.props.placeRobot(this.props.coord, this.props.face.toLowerCase()[0], arr2);
+						if (!arr[1]) this.setState({ error: "place commands needs parameters" });else {
+							arr2 = arr[1].split(",");
+							if (arr2[0] > 4 || arr2[1] > 4 || arr2[0] < 0 || arr2[0] < 0) this.setState({ error: "X and Y coordinates must be between 0 and 4" });else {
+								if (arr2.length == 3) this.props.placeRobot(this.props.coord, this.props.face.toLowerCase()[0], arr2);else this.setState({ error: "place commands needs 3 parameters e.g. 0,0,w" });
+							}
+						}
 						break;
 					case "move":
+						if (this.props.face.toLowerCase()[0] == "n" && this.props.coord[1] == 4) this.setState({ error: "robot will fall" });
+						if (this.props.face.toLowerCase()[0] == "s" && this.props.coord[1] == 0) this.setState({ error: "robot will fall" });
+						if (this.props.face.toLowerCase()[0] == "w" && this.props.coord[0] == 4) this.setState({ error: "robot will fall" });
+						if (this.props.face.toLowerCase()[0] == "e" && this.props.coord[0] == 0) this.setState({ error: "robot will fall" });
 						this.props.moveRobot(this.props.face.toLowerCase()[0]);
 						break;
 					case "left":
@@ -25679,7 +25696,9 @@ var Main = function (_Component) {
 			var _props = this.props,
 			    coord = _props.coord,
 			    face = _props.face;
-			var cmd = this.state.cmd;
+			var _state = this.state,
+			    cmd = _state.cmd,
+			    error = _state.error;
 			var changeInput = this.changeInput,
 			    keyPress = this.keyPress,
 			    inputType = this.inputType;
@@ -25689,7 +25708,7 @@ var Main = function (_Component) {
 				null,
 				_react2.default.createElement(_Main2.default, {
 					coord: coord, face: face,
-					cmd: cmd,
+					cmd: cmd, error: error,
 					changeInput: changeInput, keyPress: keyPress,
 					inputType: inputType })
 			);

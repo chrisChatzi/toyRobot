@@ -169,10 +169,13 @@ $headerMain: #213132;
 	
 }
 .action{
-	.command, .keyboard{
+	.command{
 		float: left;
 		width: 98%;
 		margin: 0 1%;
+	}
+	.error{
+		color: #f00;
 	}
 	.bot{
 		@include setHeight(60px);

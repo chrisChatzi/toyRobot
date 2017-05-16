@@ -125,10 +125,13 @@ button {
       right: 0;
       margin-right: -10px; }
 
-.action .command, .action .keyboard {
+.action .command {
   float: left;
   width: 98%;
   margin: 0 1%; }
+
+.action .error {
+  color: #f00; }
 
 .action .bot {
   height: 60px;
