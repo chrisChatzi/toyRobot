@@ -25354,10 +25354,6 @@ module.exports = warning;
 Object.defineProperty(exports, "__esModule", {
     value: true
 });
-exports.place_robot = exports.face_robot = exports.move_robot = undefined;
-
-require("./general/logic.js");
-
 //move robot
 var move_robot = exports.move_robot = function move_robot(face) {
     return {
@@ -25380,7 +25376,7 @@ var place_robot = exports.place_robot = function place_robot(coord, face, arr) {
     };
 };
 
-},{"./general/logic.js":258}],254:[function(require,module,exports){
+},{}],254:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -25452,7 +25448,12 @@ var Actions = function Actions(_ref) {
 				_react2.default.createElement(
 					"p",
 					null,
-					"PLACE X,Y,F: Places the robot at the X,Y point F facing North,East,West,South or just N,E,W,S",
+					_react2.default.createElement(
+						"b",
+						null,
+						"PLACE X,Y,F or place"
+					),
+					": Places the robot at the X,Y point F facing North,East,West,South or just N,E,W,S",
 					_react2.default.createElement("br", null),
 					"Acceptable range of points are 0<=p<=4",
 					_react2.default.createElement("br", null),
@@ -25461,17 +25462,32 @@ var Actions = function Actions(_ref) {
 				_react2.default.createElement(
 					"p",
 					null,
-					"MOVE: Moves robot forward"
+					_react2.default.createElement(
+						"b",
+						null,
+						"MOVE or move"
+					),
+					": Moves robot forward"
 				),
 				_react2.default.createElement(
 					"p",
 					null,
-					"LEFT: Changes direction of robot (not moving it)"
+					_react2.default.createElement(
+						"b",
+						null,
+						"LEFT or left"
+					),
+					": Changes direction of robot (not moving it)"
 				),
 				_react2.default.createElement(
 					"p",
 					null,
-					"RIGHT: Changes direction of robot (not moving it)"
+					_react2.default.createElement(
+						"b",
+						null,
+						"RIGHT or right"
+					),
+					": Changes direction of robot (not moving it)"
 				)
 			)
 		)
@@ -25632,8 +25648,8 @@ var Main = function (_Component) {
 		var _this = _possibleConstructorReturn(this, (Main.__proto__ || Object.getPrototypeOf(Main)).call(this, props));
 
 		_this.state = {
-			cmd: "",
-			error: ""
+			cmd: "", //hold command input text
+			error: "" //error messages
 		};
 		//events
 		_this.changeInput = _this.changeInputH.bind(_this);
@@ -25659,7 +25675,7 @@ var Main = function (_Component) {
 		key: 'componentWillUnmount',
 		value: function componentWillUnmount() {}
 
-		//catch keypress
+		//on command input text change
 
 	}, {
 		key: 'changeInputH',
@@ -25668,30 +25684,34 @@ var Main = function (_Component) {
 			var val = e.target.value;
 			this.setState({ cmd: val });
 		}
+		//on command input keypress (only for Enter key catch)
+
 	}, {
 		key: 'keyPressH',
 		value: function keyPressH(e) {
+			// only on enter key
 			if (e.keyCode == 13) {
 				var val = this.state.cmd;
 				var arr = val.split(" ");
 				var arr2 = [];
 				switch (arr[0].toLowerCase()) {
 					case "place":
+						//check if parameters are there
 						if (!arr[1]) this.setState({ error: "place commands needs parameters" });else {
 							arr2 = arr[1].split(",");
+							//check if coordinates are between 0 and 4
 							if (arr2[0] > 4 || arr2[1] > 4 || arr2[0] < 0 || arr2[0] < 0) this.setState({ error: "X and Y coordinates must be between 0 and 4" });else {
+								//check if there are exactly 3 parameters
 								if (arr2.length == 3) {
 									var face = arr2[2][0];
+									//check if direction is valid
 									if (face != "n" && face != "s" && face != "w" && face != "e") this.setState({ error: "direction seems to be wrong" });else this.props.placeRobot(this.props.coord, this.props.face.toLowerCase()[0], arr2);
 								} else this.setState({ error: "place commands needs 3 parameters e.g. 0,0,w" });
 							}
 						}
 						break;
 					case "move":
-						if (this.props.face.toLowerCase()[0] == "n" && this.props.coord[1] == 4) this.setState({ error: "robot will fall" });
-						if (this.props.face.toLowerCase()[0] == "s" && this.props.coord[1] == 0) this.setState({ error: "robot will fall" });
-						if (this.props.face.toLowerCase()[0] == "w" && this.props.coord[0] == 4) this.setState({ error: "robot will fall" });
-						if (this.props.face.toLowerCase()[0] == "e" && this.props.coord[0] == 0) this.setState({ error: "robot will fall" });
+						this.robotWillFall();
 						this.props.moveRobot(this.props.face.toLowerCase()[0]);
 						break;
 					case "left":
@@ -25711,19 +25731,29 @@ var Main = function (_Component) {
 	}, {
 		key: 'arrowH',
 		value: function arrowH(type) {
+			this.setState({ error: "" });
 			switch (type) {
 				case "left":
 					this.props.faceRobot(this.props.face.toLowerCase()[0], "left");break;
 				case "right":
 					this.props.faceRobot(this.props.face.toLowerCase()[0], "right");break;
 				case "up":
-					if (this.props.face.toLowerCase()[0] == "n" && this.props.coord[1] == 4) this.setState({ error: "robot will fall" });
-					if (this.props.face.toLowerCase()[0] == "s" && this.props.coord[1] == 0) this.setState({ error: "robot will fall" });
-					if (this.props.face.toLowerCase()[0] == "w" && this.props.coord[0] == 4) this.setState({ error: "robot will fall" });
-					if (this.props.face.toLowerCase()[0] == "e" && this.props.coord[0] == 0) this.setState({ error: "robot will fall" });
+					this.robotWillFall();
 					this.props.moveRobot(this.props.face.toLowerCase()[0]);
 					break;
 			}
+		}
+
+		// help methods
+		//check if robot will fall
+
+	}, {
+		key: 'robotWillFall',
+		value: function robotWillFall() {
+			if (this.props.face.toLowerCase()[0] == "n" && this.props.coord[1] == 4) this.setState({ error: "robot will fall" });
+			if (this.props.face.toLowerCase()[0] == "s" && this.props.coord[1] == 0) this.setState({ error: "robot will fall" });
+			if (this.props.face.toLowerCase()[0] == "w" && this.props.coord[0] == 4) this.setState({ error: "robot will fall" });
+			if (this.props.face.toLowerCase()[0] == "e" && this.props.coord[0] == 0) this.setState({ error: "robot will fall" });
 		}
 	}, {
 		key: 'render',
@@ -25755,9 +25785,6 @@ var Main = function (_Component) {
 exports.default = (0, _reactRedux.connect)(mapStateToProps, mapDispatchToProps)(Main);
 
 },{"../actions.js":253,"../components/Main.js":256,"react":228,"react-redux":176}],258:[function(require,module,exports){
-"use strict";
-
-},{}],259:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -25772,7 +25799,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 exports.default = (0, _createBrowserHistory2.default)();
 
-},{"history/createBrowserHistory":27}],260:[function(require,module,exports){
+},{"history/createBrowserHistory":27}],259:[function(require,module,exports){
 'use strict';
 
 var _react = require('react');
@@ -25824,7 +25851,7 @@ function desktop() {
 	), document.getElementById('app'));
 }
 
-},{"./history.js":259,"./reducers":262,"./routes/Main":264,"react":228,"react-dom":41,"react-redux":176,"react-router":199,"redux":235,"redux-thunk":229}],261:[function(require,module,exports){
+},{"./history.js":258,"./reducers":261,"./routes/Main":263,"react":228,"react-dom":41,"react-redux":176,"react-router":199,"redux":235,"redux-thunk":229}],260:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -25837,7 +25864,7 @@ var main = {
 
 exports.default = { main: main };
 
-},{}],262:[function(require,module,exports){
+},{}],261:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -25858,7 +25885,7 @@ var reducer = (0, _redux.combineReducers)({
 
 exports.default = reducer;
 
-},{"./main":263,"redux":235}],263:[function(require,module,exports){
+},{"./main":262,"redux":235}],262:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -25879,6 +25906,7 @@ var state_update = function state_update() {
 	switch (action.type) {
 		case "MOVE_ROBOT":
 			{
+				//change coord of X or Y depending on where the robot faces
 				var coord = newstate.coord.slice();
 				switch (action.face) {
 					case "w":
@@ -25895,6 +25923,7 @@ var state_update = function state_update() {
 			}
 		case "FACE_ROBOT":
 			{
+				//change where robot is facing
 				var face = newstate.face;
 				var newDir = "";
 				switch (action.face) {
@@ -25912,6 +25941,7 @@ var state_update = function state_update() {
 			}
 		case "PLACE_ROBOT":
 			{
+				//place robot to table according to X,Y and face
 				var _coord = newstate.coord.slice();
 				var _face = newstate.face;
 				_coord[0] = action.arr[0];
@@ -25928,7 +25958,7 @@ var state_update = function state_update() {
 
 exports.default = state_update;
 
-},{"../initialState":261}],264:[function(require,module,exports){
+},{"../initialState":260}],263:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -25955,4 +25985,4 @@ var Main = function Main() {
 
 exports.default = Main;
 
-},{"../containers/Main":257,"react":228}]},{},[260]);
+},{"../containers/Main":257,"react":228}]},{},[259]);

@@ -1,5 +1,3 @@
-import { } from './general/logic.js'
-
 //move robot
 export const move_robot = (face) => {
     return {

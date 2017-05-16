@@ -78,14 +78,18 @@ class Main extends Component {
 			let arr2 = [];
 			switch(arr[0].toLowerCase()){
 				case "place":
+					//check if parameters are there
 					if(!arr[1]) this.setState({error : "place commands needs parameters"});
 					else{
 						arr2 = arr[1].split(",");
+						//check if coordinates are between 0 and 4
 						if(arr2[0] > 4 || arr2[1] > 4 || arr2[0] < 0 || arr2[0] < 0)
 							this.setState({error : "X and Y coordinates must be between 0 and 4"});
 						else{
+							//check if there are exactly 3 parameters
 							if(arr2.length == 3){
 								let face = arr2[2][0];
+								//check if direction is valid
 								if(face != "n" && face != "s" && face != "w" && face != "e")
 									this.setState({error : "direction seems to be wrong"});
 								else
@@ -99,14 +103,7 @@ class Main extends Component {
 					}
 				break;
 				case "move":
-					if(this.props.face.toLowerCase()[0] == "n" && this.props.coord[1] == 4)
-						this.setState({error : "robot will fall"});
-					if(this.props.face.toLowerCase()[0] == "s" && this.props.coord[1] == 0)
-						this.setState({error : "robot will fall"});
-					if(this.props.face.toLowerCase()[0] == "w" && this.props.coord[0] == 4)
-						this.setState({error : "robot will fall"});
-					if(this.props.face.toLowerCase()[0] == "e" && this.props.coord[0] == 0)
-						this.setState({error : "robot will fall"});
+					this.robotWillFall();
 					this.props.moveRobot(this.props.face.toLowerCase()[0]);
 				break;
 				case "left":
@@ -128,17 +125,23 @@ class Main extends Component {
 			case "left": this.props.faceRobot(this.props.face.toLowerCase()[0], "left"); break;
 			case "right": this.props.faceRobot(this.props.face.toLowerCase()[0], "right"); break;
 			case "up":
-				if(this.props.face.toLowerCase()[0] == "n" && this.props.coord[1] == 4)
-					this.setState({error : "robot will fall"});
-				if(this.props.face.toLowerCase()[0] == "s" && this.props.coord[1] == 0)
-					this.setState({error : "robot will fall"});
-				if(this.props.face.toLowerCase()[0] == "w" && this.props.coord[0] == 4)
-					this.setState({error : "robot will fall"});
-				if(this.props.face.toLowerCase()[0] == "e" && this.props.coord[0] == 0)
-					this.setState({error : "robot will fall"});
+				this.robotWillFall();
 				this.props.moveRobot(this.props.face.toLowerCase()[0]);
 			break;
 		}
+	}
+
+	// help methods
+	//check if robot will fall
+	robotWillFall(){
+		if(this.props.face.toLowerCase()[0] == "n" && this.props.coord[1] == 4)
+			this.setState({error : "robot will fall"});
+		if(this.props.face.toLowerCase()[0] == "s" && this.props.coord[1] == 0)
+			this.setState({error : "robot will fall"});
+		if(this.props.face.toLowerCase()[0] == "w" && this.props.coord[0] == 4)
+			this.setState({error : "robot will fall"});
+		if(this.props.face.toLowerCase()[0] == "e" && this.props.coord[0] == 0)
+			this.setState({error : "robot will fall"});
 	}
 
 	render() {

@@ -4,6 +4,7 @@ const state_update = (state = init.main, action) => {
 	let newstate = Object.assign({}, state);
 	switch (action.type) {
 		case "MOVE_ROBOT": {
+			//change coord of X or Y depending on where the robot faces
 			let coord = newstate.coord.slice();
 			switch(action.face){
 				case "w": if(coord[0] < 4) coord[0] = coord[0]+1; break;
@@ -15,6 +16,7 @@ const state_update = (state = init.main, action) => {
 			return newstate
 		}
 		case "FACE_ROBOT": {
+			//change where robot is facing
 			let face = newstate.face;
 			let newDir = "";
 			switch(action.face){
@@ -27,6 +29,7 @@ const state_update = (state = init.main, action) => {
 			return newstate
 		}
 		case "PLACE_ROBOT": {
+			//place robot to table according to X,Y and face
 			let coord = newstate.coord.slice();
 			let face = newstate.face;
 			coord[0] = action.arr[0];
