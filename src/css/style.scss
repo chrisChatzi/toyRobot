@@ -1,17 +1,5 @@
 $font: 'christos', Serif;
-$fontLogo: 'asteia';
-$fontMain: 'canter';
-$fontNormal: 'normal';
-$fontHand: 'hand';
-$borderColor: #ddd;
-$mainBlack : #242428;
-$blackFont : #444;
-$mainRed: #984b43;
-
-$mainActive : #90afc5;
-
-$headerMain: #213132;
-
+$blackFont : #222;
 /*mixins*/
 	/*set element with absolute position*/
 	@mixin setAbsolute($top, $bottom, $left, $right, $width, $height){
@@ -89,15 +77,12 @@ $headerMain: #213132;
 		-o-background-size: cover;
 		background-size: cover;
 	}	
-	input, select{
+	input{
 		@include setDims("", auto, 32px, 5px 0, 0 5px);
 		@include setBorders(4px, 1px solid #ddd);
 		box-sizing: border-box;
-		@include setColors($blackFont, #f2f2f5);
+		@include setColors($blackFont, #fff);
 		text-align: center;
-	}
-	select{
-		margin: 0 2px;
 	}
 	button{
 		font-family: $font;
@@ -174,8 +159,19 @@ $headerMain: #213132;
 		width: 98%;
 		margin: 0 1%;
 	}
+	.keys{
+		overflow: auto;
+		@include setHeight(40px);
+		button{
+			margin: 0 5px;
+			width: 30px;
+			@include setColors(#242428, #bdc3c7);
+		}
+	}
 	.error{
 		color: #f00;
+		/*@include setHeight(40px);*/
+		margin: 5px;
 	}
 	.bot{
 		@include setHeight(60px);

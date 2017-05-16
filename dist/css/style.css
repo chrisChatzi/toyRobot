@@ -29,7 +29,7 @@ html, body {
   -o-background-size: cover;
   background-size: cover; }
 
-input, select {
+input {
   width: auto;
   height: 32px;
   line-height: 32px;
@@ -38,12 +38,9 @@ input, select {
   border-radius: 4px;
   border: 1px solid #ddd;
   box-sizing: border-box;
-  background: #f2f2f5;
-  color: #444;
+  background: #fff;
+  color: #222;
   text-align: center; }
-
-select {
-  margin: 0 2px; }
 
 button {
   font-family: "christos", Serif;
@@ -130,8 +127,20 @@ button {
   width: 98%;
   margin: 0 1%; }
 
+.action .keys {
+  overflow: auto;
+  height: 40px;
+  line-height: 40px; }
+  .action .keys button {
+    margin: 0 5px;
+    width: 30px;
+    background: #bdc3c7;
+    color: #242428; }
+
 .action .error {
-  color: #f00; }
+  color: #f00;
+  /*@include setHeight(40px);*/
+  margin: 5px; }
 
 .action .bot {
   height: 60px;

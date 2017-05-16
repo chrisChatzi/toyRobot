@@ -25354,16 +25354,10 @@ module.exports = warning;
 Object.defineProperty(exports, "__esModule", {
     value: true
 });
-exports.place_robot = exports.face_robot = exports.move_robot = exports.input_type = undefined;
+exports.place_robot = exports.face_robot = exports.move_robot = undefined;
 
 require("./general/logic.js");
 
-var input_type = exports.input_type = function input_type(typ) {
-    return {
-        type: "INPUT_TYPE",
-        typ: typ
-    };
-};
 //move robot
 var move_robot = exports.move_robot = function move_robot(face) {
     return {
@@ -25403,7 +25397,8 @@ var Actions = function Actions(_ref) {
 	var cmd = _ref.cmd,
 	    changeInput = _ref.changeInput,
 	    keyPress = _ref.keyPress,
-	    error = _ref.error;
+	    error = _ref.error,
+	    arrow = _ref.arrow;
 	return _react2.default.createElement(
 		"div",
 		null,
@@ -25425,6 +25420,31 @@ var Actions = function Actions(_ref) {
 				"div",
 				{ className: "error" },
 				error
+			),
+			_react2.default.createElement(
+				"div",
+				{ className: "keys" },
+				_react2.default.createElement(
+					"button",
+					{ onClick: function onClick() {
+							return arrow("left");
+						} },
+					"\u2190"
+				),
+				_react2.default.createElement(
+					"button",
+					{ onClick: function onClick() {
+							return arrow("up");
+						} },
+					"\u2191"
+				),
+				_react2.default.createElement(
+					"button",
+					{ onClick: function onClick() {
+							return arrow("right");
+						} },
+					"\u2192"
+				)
 			),
 			_react2.default.createElement(
 				"div",
@@ -25518,9 +25538,9 @@ var Main = function Main(_ref) {
 	    face = _ref.face,
 	    cmd = _ref.cmd,
 	    error = _ref.error,
-	    inputType = _ref.inputType,
 	    changeInput = _ref.changeInput,
-	    keyPress = _ref.keyPress;
+	    keyPress = _ref.keyPress,
+	    arrow = _ref.arrow;
 	return _react2.default.createElement(
 		'div',
 		{ className: 'main' },
@@ -25537,7 +25557,7 @@ var Main = function Main(_ref) {
 		_react2.default.createElement(
 			'div',
 			{ className: 'action' },
-			_react2.default.createElement(_Actions2.default, { cmd: cmd, error: error, changeInput: changeInput, keyPress: keyPress })
+			_react2.default.createElement(_Actions2.default, { cmd: cmd, error: error, changeInput: changeInput, keyPress: keyPress, arrow: arrow })
 		)
 	);
 };
@@ -25584,9 +25604,6 @@ function mapStateToProps(state) {
 
 function mapDispatchToProps(dispatch) {
 	return {
-		inputType: function inputType(type) {
-			dispatch((0, _actions.input_type)(type));
-		},
 		moveRobot: function moveRobot(face) {
 			dispatch((0, _actions.move_robot)(face));
 		},
@@ -25621,7 +25638,7 @@ var Main = function (_Component) {
 		//events
 		_this.changeInput = _this.changeInputH.bind(_this);
 		_this.keyPress = _this.keyPressH.bind(_this);
-		_this.inputType = _this.inputTypeH.bind(_this);
+		_this.arrow = _this.arrowH.bind(_this);
 		return _this;
 	}
 
@@ -25663,7 +25680,10 @@ var Main = function (_Component) {
 						if (!arr[1]) this.setState({ error: "place commands needs parameters" });else {
 							arr2 = arr[1].split(",");
 							if (arr2[0] > 4 || arr2[1] > 4 || arr2[0] < 0 || arr2[0] < 0) this.setState({ error: "X and Y coordinates must be between 0 and 4" });else {
-								if (arr2.length == 3) this.props.placeRobot(this.props.coord, this.props.face.toLowerCase()[0], arr2);else this.setState({ error: "place commands needs 3 parameters e.g. 0,0,w" });
+								if (arr2.length == 3) {
+									var face = arr2[2][0];
+									if (face != "n" && face != "s" && face != "w" && face != "e") this.setState({ error: "direction seems to be wrong" });else this.props.placeRobot(this.props.coord, this.props.face.toLowerCase()[0], arr2);
+								} else this.setState({ error: "place commands needs 3 parameters e.g. 0,0,w" });
 							}
 						}
 						break;
@@ -25680,15 +25700,30 @@ var Main = function (_Component) {
 					case "right":
 						this.props.faceRobot(this.props.face.toLowerCase()[0], "right");
 						break;
+					default:
+						this.setState({ error: "command seems to be wrong. typo?" });
+						break;
 				}
 			}
 		}
-		//change input type
+		//arrow keys click
 
 	}, {
-		key: 'inputTypeH',
-		value: function inputTypeH(type) {
-			this.props.inputType(type);
+		key: 'arrowH',
+		value: function arrowH(type) {
+			switch (type) {
+				case "left":
+					this.props.faceRobot(this.props.face.toLowerCase()[0], "left");break;
+				case "right":
+					this.props.faceRobot(this.props.face.toLowerCase()[0], "right");break;
+				case "up":
+					if (this.props.face.toLowerCase()[0] == "n" && this.props.coord[1] == 4) this.setState({ error: "robot will fall" });
+					if (this.props.face.toLowerCase()[0] == "s" && this.props.coord[1] == 0) this.setState({ error: "robot will fall" });
+					if (this.props.face.toLowerCase()[0] == "w" && this.props.coord[0] == 4) this.setState({ error: "robot will fall" });
+					if (this.props.face.toLowerCase()[0] == "e" && this.props.coord[0] == 0) this.setState({ error: "robot will fall" });
+					this.props.moveRobot(this.props.face.toLowerCase()[0]);
+					break;
+			}
 		}
 	}, {
 		key: 'render',
@@ -25701,7 +25736,7 @@ var Main = function (_Component) {
 			    error = _state.error;
 			var changeInput = this.changeInput,
 			    keyPress = this.keyPress,
-			    inputType = this.inputType;
+			    arrow = this.arrow;
 
 			return _react2.default.createElement(
 				'div',
@@ -25709,8 +25744,7 @@ var Main = function (_Component) {
 				_react2.default.createElement(_Main2.default, {
 					coord: coord, face: face,
 					cmd: cmd, error: error,
-					changeInput: changeInput, keyPress: keyPress,
-					inputType: inputType })
+					changeInput: changeInput, keyPress: keyPress, arrow: arrow })
 			);
 		}
 	}]);
@@ -25843,11 +25877,6 @@ var state_update = function state_update() {
 
 	var newstate = Object.assign({}, state);
 	switch (action.type) {
-		case "INPUT_TYPE":
-			{
-				newstate.input = action.typ;
-				return newstate;
-			}
 		case "MOVE_ROBOT":
 			{
 				var coord = newstate.coord.slice();

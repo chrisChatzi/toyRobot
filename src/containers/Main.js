@@ -5,7 +5,7 @@
 import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
 import MainC from '../components/Main.js'
-import { input_type, move_robot, face_robot, place_robot } from '../actions.js' 
+import { move_robot, face_robot, place_robot } from '../actions.js' 
 
 function mapStateToProps(state) {
 	return {
@@ -16,9 +16,6 @@ function mapStateToProps(state) {
 
 function mapDispatchToProps(dispatch) {
 	return {
-		inputType: (type) => {
-			dispatch(input_type(type));
-		},
 		moveRobot: (face) => {
 			dispatch(move_robot(face));
 		},
@@ -42,13 +39,13 @@ class Main extends Component {
 		super(props);
 
 		this.state = {
-			cmd : "",
-			error : ""
+			cmd : "",			//hold command input text
+			error : ""			//error messages
 		}
 		//events
 		this.changeInput = this.changeInputH.bind(this)
 		this.keyPress = this.keyPressH.bind(this)
-		this.inputType = this.inputTypeH.bind(this)
+		this.arrow = this.arrowH.bind(this)
 	}
 
 	componentDidMount(e) {
@@ -66,13 +63,15 @@ class Main extends Component {
 		
 	}
 
-	//catch keypress
+	//on command input text change
 	changeInputH(e){
 		this.setState({error : ""});
 		let val = e.target.value;
 		this.setState({cmd : val});
 	}
+	//on command input keypress (only for Enter key catch)
 	keyPressH(e){
+		// only on enter key
 		if(e.keyCode == 13){
 			let val = this.state.cmd;
 			let arr = val.split(" ");
@@ -85,13 +84,17 @@ class Main extends Component {
 						if(arr2[0] > 4 || arr2[1] > 4 || arr2[0] < 0 || arr2[0] < 0)
 							this.setState({error : "X and Y coordinates must be between 0 and 4"});
 						else{
-							if(arr2.length == 3)
-								this.props.placeRobot(
-									this.props.coord, 
-									this.props.face.toLowerCase()[0], 
-									arr2
-								);
-							else this.setState({error : "place commands needs 3 parameters e.g. 0,0,w"});
+							if(arr2.length == 3){
+								let face = arr2[2][0];
+								if(face != "n" && face != "s" && face != "w" && face != "e")
+									this.setState({error : "direction seems to be wrong"});
+								else
+									this.props.placeRobot(
+										this.props.coord, 
+										this.props.face.toLowerCase()[0], 
+										arr2
+									);
+							}else this.setState({error : "place commands needs 3 parameters e.g. 0,0,w"});
 						}
 					}
 				break;
@@ -112,25 +115,42 @@ class Main extends Component {
 				case "right":
 					this.props.faceRobot(this.props.face.toLowerCase()[0], "right");
 				break;
+				default:
+					this.setState({error : "command seems to be wrong. typo?"});
+				break;
 			}
 		}
 	}
-	//change input type
-	inputTypeH(type){
-		this.props.inputType(type);
+	//arrow keys click
+	arrowH(type){
+		this.setState({error : ""});
+		switch(type){
+			case "left": this.props.faceRobot(this.props.face.toLowerCase()[0], "left"); break;
+			case "right": this.props.faceRobot(this.props.face.toLowerCase()[0], "right"); break;
+			case "up":
+				if(this.props.face.toLowerCase()[0] == "n" && this.props.coord[1] == 4)
+					this.setState({error : "robot will fall"});
+				if(this.props.face.toLowerCase()[0] == "s" && this.props.coord[1] == 0)
+					this.setState({error : "robot will fall"});
+				if(this.props.face.toLowerCase()[0] == "w" && this.props.coord[0] == 4)
+					this.setState({error : "robot will fall"});
+				if(this.props.face.toLowerCase()[0] == "e" && this.props.coord[0] == 0)
+					this.setState({error : "robot will fall"});
+				this.props.moveRobot(this.props.face.toLowerCase()[0]);
+			break;
+		}
 	}
 
 	render() {
 		let { coord, face } = this.props
 		let { cmd, error } = this.state
-		let { changeInput, keyPress, inputType } = this
+		let { changeInput, keyPress, arrow } = this
 		return (
 			<div>
 				<MainC 
 				coord={coord} face={face}
 				cmd={cmd} error={error}
-				changeInput={changeInput} keyPress={keyPress}
-				inputType={inputType} />
+				changeInput={changeInput} keyPress={keyPress} arrow={arrow} />
 			</div>
 		)
 	}

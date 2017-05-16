@@ -2,7 +2,7 @@ import React, { PropTypes } from 'react'
 import Cell from './Cell.js'
 import Actions from './Actions.js'
 
-const Main = ( { coord, face, cmd, error, inputType, changeInput, keyPress } ) => (
+const Main = ( { coord, face, cmd, error, changeInput, keyPress, arrow } ) => (
 	<div className="main">
 		<div className="table">
 			{[4,3,2,1,0].map( (vCol, iCol) =>
@@ -13,7 +13,7 @@ const Main = ( { coord, face, cmd, error, inputType, changeInput, keyPress } ) =
 			)}
 		</div>
 		<div className="action">
-			<Actions cmd={cmd} error={error} changeInput={changeInput} keyPress={keyPress} />
+			<Actions cmd={cmd} error={error} changeInput={changeInput} keyPress={keyPress} arrow={arrow} />
 		</div>
 	</div>
 )

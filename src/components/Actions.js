@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react'
 
-const Actions = ( { cmd, changeInput, keyPress, error } ) => (
+const Actions = ( { cmd, changeInput, keyPress, error, arrow } ) => (
 	<div>
 		<h3>Command line</h3>
 		<div className="command">
@@ -9,6 +9,11 @@ const Actions = ( { cmd, changeInput, keyPress, error } ) => (
 					onChange={changeInput} onKeyUp={keyPress} />
 			</div>
 			<div className="error">{error}</div>
+			<div className="keys">
+				<button onClick={()=>arrow("left")}>&larr;</button>
+				<button onClick={()=>arrow("up")}>&uarr;</button>
+				<button onClick={()=>arrow("right")}>&rarr;</button>
+			</div>
 			<div className="info">
 				<p>PLACE X,Y,F: Places the robot at the X,Y point F facing 
 					North,East,West,South or just N,E,W,S
