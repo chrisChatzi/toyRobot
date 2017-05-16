@@ -8,6 +8,7 @@ import MainC from '../components/Main.js'
 
 function mapStateToProps(state) {
 	return {
+		input : state.main.input
 	};
 }
 
@@ -28,7 +29,7 @@ class Main extends Component {
 		super(props);
 
 		let array = []
-		for(let i=1; i<16; i++) array.push(i)
+		for(let i=1; i<=25; i++) array.push(i)
 		this.state = { table : array }
 	}
 
@@ -47,10 +48,11 @@ class Main extends Component {
 		
 	}
 
-	render() {	
+	render() {
+		let { input } = this.props
 		return (
 			<div>
-				<MainC table={this.state.table} />
+				<MainC table={this.state.table} input={input} />
 			</div>
 		)
 	}

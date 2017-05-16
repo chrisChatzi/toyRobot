@@ -25401,6 +25401,112 @@ var Main = function Main(_ref) {
 			table.map(function (v, i) {
 				return _react2.default.createElement(_Cell2.default, { key: i, idx: i, val: v });
 			})
+		),
+		_react2.default.createElement(
+			'div',
+			{ className: 'action' },
+			_react2.default.createElement(
+				'h3',
+				null,
+				'Choose input method'
+			),
+			_react2.default.createElement(
+				'div',
+				{ className: 'command' },
+				_react2.default.createElement(
+					'div',
+					{ className: 'div active' },
+					_react2.default.createElement(
+						'div',
+						{ className: 'top' },
+						_react2.default.createElement(
+							'button',
+							null,
+							'Command line'
+						)
+					),
+					_react2.default.createElement(
+						'div',
+						{ className: 'bot' },
+						_react2.default.createElement('input', { placeholder: 'Type commands' })
+					)
+				),
+				_react2.default.createElement(
+					'div',
+					{ className: 'info' },
+					_react2.default.createElement(
+						'p',
+						null,
+						'PLACE X,Y,F: Places the robot at the X,Y point F facing North,East,West,South or just N,E,W,S',
+						_react2.default.createElement('br', null),
+						'Acceptable range of points are 0<=p<=5',
+						_react2.default.createElement('br', null),
+						'e.g.: PLACE 0,0,S or place 0,0,west or place 0,0,w'
+					),
+					_react2.default.createElement(
+						'p',
+						null,
+						'MOVE: Moves robot forward'
+					),
+					_react2.default.createElement(
+						'p',
+						null,
+						'LEFT: Changes direction of robot (not moving it)'
+					),
+					_react2.default.createElement(
+						'p',
+						null,
+						'RIGHT: Changes direction of robot (not moving it)'
+					)
+				)
+			),
+			_react2.default.createElement(
+				'div',
+				{ className: 'keyboard' },
+				_react2.default.createElement(
+					'div',
+					{ className: 'div' },
+					_react2.default.createElement(
+						'div',
+						{ className: 'top' },
+						_react2.default.createElement(
+							'button',
+							null,
+							'Press keys'
+						)
+					),
+					_react2.default.createElement(
+						'div',
+						{ className: 'bot' },
+						_react2.default.createElement(
+							'button',
+							{ className: 'key' },
+							'\u2190'
+						),
+						_react2.default.createElement(
+							'button',
+							{ className: 'key' },
+							'\u2191'
+						),
+						_react2.default.createElement(
+							'button',
+							{ className: 'key' },
+							'\u2192'
+						)
+					)
+				),
+				_react2.default.createElement(
+					'div',
+					{ className: 'info' },
+					_react2.default.createElement(
+						'p',
+						null,
+						'Enable it and press Enter to set the robot to 0,0 South West most corner facing North.',
+						_react2.default.createElement('br', null),
+						'Then press \u2191 Up arrow to move and \u2190 Left and \u2192 Right arrows to change direction'
+					)
+				)
+			)
 		)
 	);
 };
@@ -25460,7 +25566,7 @@ var Main = function (_Component) {
 		var _this = _possibleConstructorReturn(this, (Main.__proto__ || Object.getPrototypeOf(Main)).call(this, props));
 
 		var array = [];
-		for (var i = 1; i < 16; i++) {
+		for (var i = 1; i <= 25; i++) {
 			array.push(i);
 		}_this.state = { table: array };
 		return _this;

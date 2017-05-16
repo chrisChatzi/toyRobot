@@ -74,4 +74,32 @@ button {
   border: 1px solid #ccc;
   box-sizing: border-box; }
 
+.action .command, .action .keyboard {
+  float: left;
+  width: 48%;
+  margin: 0 1%; }
+  .action .command .div, .action .keyboard .div {
+    border: 1px solid #ccc;
+    box-sizing: border-box; }
+  .action .command .key, .action .keyboard .key {
+    background: #bdc3c7;
+    color: #242428;
+    border-radius: 5px;
+    width: 30px; }
+  .action .command .active, .action .keyboard .active {
+    border-color: #2980b9; }
+
+.action .top {
+  height: 40px;
+  line-height: 40px; }
+
+.action .bot {
+  height: 60px;
+  line-height: 60px; }
+  .action .bot button {
+    margin: 0 5px; }
+
+.action .info {
+  padding: 0 20px; }
+
 /*# sourceMappingURL=style.css.map */

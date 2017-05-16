@@ -124,3 +124,31 @@ $headerMain: #213132;
 	border: 1px solid #ccc;
 	box-sizing: border-box;
 }
+.action{
+	.command, .keyboard{
+		float: left;
+		width: 48%;
+		margin: 0 1%;
+		.div{
+			border: 1px solid #ccc;
+			box-sizing: border-box;
+		}
+		.key{
+			background: #bdc3c7;
+			color: #242428;
+			border-radius: 5px;
+			width: 30px;
+		}
+		.active{
+			border-color: #2980b9;
+		}
+	}
+	.top{ @include setHeight(40px); }
+	.bot{
+		@include setHeight(60px);
+		button{ margin: 0 5px; }
+	}
+	.info{
+		padding: 0 20px;
+	}
+}
