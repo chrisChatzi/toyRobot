@@ -116,8 +116,8 @@ $headerMain: #213132;
 
 .table{
 	overflow: auto;
-	width: 70%;
-	margin: 10px 15%;
+	width: 60%;
+	margin: 10px 20%;
 }
 .cell{
 	@include setDims(left, 20%, 50px, "", "");
@@ -146,6 +146,7 @@ $headerMain: #213132;
 		.s{
 			top: auto;
 			bottom: 0;
+			margin-bottom: -10px;
 			left: 50%;
 			right: auto;
 			margin-left: -10px;

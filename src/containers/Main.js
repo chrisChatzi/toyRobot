@@ -5,7 +5,7 @@
 import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
 import MainC from '../components/Main.js'
-import { input_type } from '../actions.js' 
+import { input_type, move_robot, face_robot } from '../actions.js' 
 
 function mapStateToProps(state) {
 	return {
@@ -18,6 +18,12 @@ function mapDispatchToProps(dispatch) {
 	return {
 		inputType: (type) => {
 			dispatch(input_type(type));
+		},
+		moveRobot: (face) => {
+			dispatch(move_robot(face));
+		},
+		faceRobot: (face, dir) => {
+			dispatch(face_robot(face, dir));
 		}
 	};
 }
@@ -31,12 +37,9 @@ class Main extends Component {
 
 	constructor(props) {
 		super(props);
-		//cells
-		let array = []
-		for(let i=1; i<=25; i++) array.push("")
+
 		this.state = {
-			table : array,		//table where robot moves
-			cmd : "",			//command input txt
+			cmd : ""
 		}
 		//events
 		this.changeInput = this.changeInputH.bind(this)
@@ -77,13 +80,13 @@ class Main extends Component {
 					console.log(arr2[2])
 				break;
 				case "move":
-					console.log("go")
+					this.props.moveRobot(this.props.face.toLowerCase()[0]);
 				break;
 				case "left":
-					console.log('l')
+					this.props.faceRobot(this.props.face.toLowerCase()[0], "left");
 				break;
 				case "right":
-					console.log('r')
+					this.props.faceRobot(this.props.face.toLowerCase()[0], "right");
 				break;
 			}
 		}
@@ -95,13 +98,13 @@ class Main extends Component {
 
 	render() {
 		let { coord, face } = this.props
-		let { table, cmd } = this.state
+		let { cmd } = this.state
 		let { changeInput, keyPress, inputType } = this
 		return (
 			<div>
 				<MainC 
 				coord={coord} face={face}
-				table={table} cmd={cmd}
+				cmd={cmd}
 				changeInput={changeInput} keyPress={keyPress}
 				inputType={inputType} />
 			</div>

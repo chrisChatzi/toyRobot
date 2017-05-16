@@ -25354,7 +25354,7 @@ module.exports = warning;
 Object.defineProperty(exports, "__esModule", {
     value: true
 });
-exports.input_type = undefined;
+exports.face_robot = exports.move_robot = exports.input_type = undefined;
 
 require("./general/logic.js");
 
@@ -25362,6 +25362,20 @@ var input_type = exports.input_type = function input_type(typ) {
     return {
         type: "INPUT_TYPE",
         typ: typ
+    };
+};
+//move robot
+var move_robot = exports.move_robot = function move_robot(face) {
+    return {
+        type: "MOVE_ROBOT",
+        face: face
+    };
+};
+//change direction
+var face_robot = exports.face_robot = function face_robot(face, dir) {
+    return {
+        type: "FACE_ROBOT",
+        face: face, dir: dir
     };
 };
 
@@ -25417,7 +25431,6 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 var Main = function Main(_ref) {
 	var coord = _ref.coord,
 	    face = _ref.face,
-	    table = _ref.table,
 	    cmd = _ref.cmd,
 	    inputType = _ref.inputType,
 	    changeInput = _ref.changeInput,
@@ -25529,6 +25542,12 @@ function mapDispatchToProps(dispatch) {
 	return {
 		inputType: function inputType(type) {
 			dispatch((0, _actions.input_type)(type));
+		},
+		moveRobot: function moveRobot(face) {
+			dispatch((0, _actions.move_robot)(face));
+		},
+		faceRobot: function faceRobot(face, dir) {
+			dispatch((0, _actions.face_robot)(face, dir));
 		}
 	};
 }
@@ -25546,15 +25565,11 @@ var Main = function (_Component) {
 	function Main(props) {
 		_classCallCheck(this, Main);
 
-		//cells
 		var _this = _possibleConstructorReturn(this, (Main.__proto__ || Object.getPrototypeOf(Main)).call(this, props));
 
-		var array = [];
-		for (var i = 1; i <= 25; i++) {
-			array.push("");
-		}_this.state = {
-			table: array, //table where robot moves
-			cmd: "" };
+		_this.state = {
+			cmd: ""
+		};
 		//events
 		_this.changeInput = _this.changeInputH.bind(_this);
 		_this.keyPress = _this.keyPressH.bind(_this);
@@ -25602,13 +25617,13 @@ var Main = function (_Component) {
 						console.log(arr2[2]);
 						break;
 					case "move":
-						console.log("go");
+						this.props.moveRobot(this.props.face.toLowerCase()[0]);
 						break;
 					case "left":
-						console.log('l');
+						this.props.faceRobot(this.props.face.toLowerCase()[0], "left");
 						break;
 					case "right":
-						console.log('r');
+						this.props.faceRobot(this.props.face.toLowerCase()[0], "right");
 						break;
 				}
 			}
@@ -25626,9 +25641,7 @@ var Main = function (_Component) {
 			var _props = this.props,
 			    coord = _props.coord,
 			    face = _props.face;
-			var _state = this.state,
-			    table = _state.table,
-			    cmd = _state.cmd;
+			var cmd = this.state.cmd;
 			var changeInput = this.changeInput,
 			    keyPress = this.keyPress,
 			    inputType = this.inputType;
@@ -25638,7 +25651,7 @@ var Main = function (_Component) {
 				null,
 				_react2.default.createElement(_Main2.default, {
 					coord: coord, face: face,
-					table: table, cmd: cmd,
+					cmd: cmd,
 					changeInput: changeInput, keyPress: keyPress,
 					inputType: inputType })
 			);
@@ -25776,6 +25789,39 @@ var state_update = function state_update() {
 		case "INPUT_TYPE":
 			{
 				newstate.input = action.typ;
+				return newstate;
+			}
+		case "MOVE_ROBOT":
+			{
+				var coord = newstate.coord.slice();
+				switch (action.face) {
+					case "w":
+						if (coord[0] < 4) coord[0] = coord[0] + 1;break;
+					case "e":
+						if (coord[0] > 0) coord[0] = coord[0] - 1;break;
+					case "n":
+						if (coord[1] < 4) coord[1] = coord[1] + 1;break;
+					case "s":
+						if (coord[1] > 0) coord[1] = coord[1] - 1;break;
+				}
+				newstate.coord = coord;
+				return newstate;
+			}
+		case "FACE_ROBOT":
+			{
+				var face = newstate.face;
+				var newDir = "";
+				switch (action.face) {
+					case "w":
+						action.dir == "left" ? newDir = "s" : newDir = "n";break;
+					case "e":
+						action.dir == "left" ? newDir = "n" : newDir = "s";break;
+					case "n":
+						action.dir == "left" ? newDir = "w" : newDir = "e";break;
+					case "s":
+						action.dir == "left" ? newDir = "e" : newDir = "w";break;
+				}
+				newstate.face = newDir;
 				return newstate;
 			}
 		default:

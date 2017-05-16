@@ -1,7 +1,7 @@
 import React, { PropTypes } from 'react'
 import Cell from './Cell.js'
 
-const Main = ( { coord, face, table, cmd, inputType, changeInput, keyPress } ) => (
+const Main = ( { coord, face, cmd, inputType, changeInput, keyPress } ) => (
 	<div className="main">
 		<div className="table">
 			{[4,3,2,1,0].map( (vCol, iCol) =>
