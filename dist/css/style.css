@@ -72,26 +72,62 @@ button {
   height: 50px;
   line-height: 50px;
   border: 1px solid #ccc;
-  box-sizing: border-box; }
+  box-sizing: border-box;
+  position: relative; }
+  .cell .circle {
+    position: absolute;
+    top: 50%;
+    bottom: auto;
+    left: 50%;
+    right: auto;
+    width: 40px;
+    height: 40px;
+    line-height: 40px;
+    margin-top: -20px;
+    margin-left: -20px;
+    border-radius: 30px;
+    background: #242428; }
+    .cell .circle .nose {
+      position: absolute;
+      top: 50%;
+      bottom: auto;
+      left: 50%;
+      right: auto;
+      width: 20px;
+      height: 20px;
+      line-height: 20px;
+      margin-top: -10px;
+      margin-left: -10px;
+      background: #242428; }
+    .cell .circle .n {
+      top: 0;
+      bottom: auto;
+      left: 50%;
+      right: auto;
+      margin-left: -10px; }
+    .cell .circle .s {
+      top: auto;
+      bottom: 0;
+      left: 50%;
+      right: auto;
+      margin-left: -10px; }
+    .cell .circle .w {
+      top: 50%;
+      bottom: auto;
+      left: 0;
+      right: auto;
+      margin-top: -10px; }
+    .cell .circle .e {
+      top: 50%;
+      bottom: auto;
+      left: auto;
+      right: 0;
+      margin-right: -10px; }
 
 .action .command, .action .keyboard {
   float: left;
-  width: 48%;
+  width: 98%;
   margin: 0 1%; }
-  .action .command .div, .action .keyboard .div {
-    border: 1px solid #ccc;
-    box-sizing: border-box; }
-  .action .command .key, .action .keyboard .key {
-    background: #bdc3c7;
-    color: #242428;
-    border-radius: 5px;
-    width: 30px; }
-  .action .command .active, .action .keyboard .active {
-    border-color: #2980b9; }
-
-.action .top {
-  height: 40px;
-  line-height: 40px; }
 
 .action .bot {
   height: 60px;

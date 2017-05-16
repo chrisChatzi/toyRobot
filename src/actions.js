@@ -1,8 +1,8 @@
 import { } from './general/logic.js'
 
-export const route = (path) => {
+export const input_type = (typ) => {
     return {
-        type: "ROUTE",
-        path
+        type: "INPUT_TYPE",
+        typ
     };
 };

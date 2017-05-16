@@ -123,27 +123,56 @@ $headerMain: #213132;
 	@include setDims(left, 20%, 50px, "", "");
 	border: 1px solid #ccc;
 	box-sizing: border-box;
+	position: relative;
+	.circle{
+		@include setAbsolute(50%, auto, 50%, auto, 40px, 40px);
+		margin-top: -20px;
+		margin-left: -20px;
+		border-radius: 30px;
+		background: #242428;
+		.nose{
+			@include setAbsolute(50%, auto, 50%, auto, 20px, 20px);
+			margin-top: -10px;
+			margin-left: -10px;
+			background: #242428;
+		}
+		.n{
+			top: 0;
+			bottom: auto;
+			left: 50%;
+			right: auto;
+			margin-left: -10px;
+		}
+		.s{
+			top: auto;
+			bottom: 0;
+			left: 50%;
+			right: auto;
+			margin-left: -10px;
+		}
+		.w{
+			top: 50%;
+			bottom: auto;
+			left: 0;
+			right: auto;
+			margin-top: -10px;
+		}
+		.e{
+			top: 50%;
+			bottom: auto;
+			left: auto;
+			right: 0;
+			margin-right: -10px;
+		}
+	}
+	
 }
 .action{
 	.command, .keyboard{
 		float: left;
-		width: 48%;
+		width: 98%;
 		margin: 0 1%;
-		.div{
-			border: 1px solid #ccc;
-			box-sizing: border-box;
-		}
-		.key{
-			background: #bdc3c7;
-			color: #242428;
-			border-radius: 5px;
-			width: 30px;
-		}
-		.active{
-			border-color: #2980b9;
-		}
 	}
-	.top{ @include setHeight(40px); }
 	.bot{
 		@include setHeight(60px);
 		button{ margin: 0 5px; }
