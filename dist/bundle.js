@@ -25354,7 +25354,7 @@ module.exports = warning;
 Object.defineProperty(exports, "__esModule", {
     value: true
 });
-exports.face_robot = exports.move_robot = exports.input_type = undefined;
+exports.place_robot = exports.face_robot = exports.move_robot = exports.input_type = undefined;
 
 require("./general/logic.js");
 
@@ -25378,8 +25378,83 @@ var face_robot = exports.face_robot = function face_robot(face, dir) {
         face: face, dir: dir
     };
 };
+//place robot
+var place_robot = exports.place_robot = function place_robot(coord, face, arr) {
+    return {
+        type: "PLACE_ROBOT",
+        coord: coord, face: face, arr: arr
+    };
+};
 
-},{"./general/logic.js":257}],254:[function(require,module,exports){
+},{"./general/logic.js":258}],254:[function(require,module,exports){
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+	value: true
+});
+
+var _react = require("react");
+
+var _react2 = _interopRequireDefault(_react);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var Actions = function Actions(_ref) {
+	var cmd = _ref.cmd,
+	    changeInput = _ref.changeInput,
+	    keyPress = _ref.keyPress;
+	return _react2.default.createElement(
+		"div",
+		null,
+		_react2.default.createElement(
+			"h3",
+			null,
+			"Command line"
+		),
+		_react2.default.createElement(
+			"div",
+			{ className: "command" },
+			_react2.default.createElement(
+				"div",
+				{ className: "bot" },
+				_react2.default.createElement("input", { placeholder: "Type commands", value: cmd,
+					onChange: changeInput, onKeyUp: keyPress })
+			),
+			_react2.default.createElement(
+				"div",
+				{ className: "info" },
+				_react2.default.createElement(
+					"p",
+					null,
+					"PLACE X,Y,F: Places the robot at the X,Y point F facing North,East,West,South or just N,E,W,S",
+					_react2.default.createElement("br", null),
+					"Acceptable range of points are 0<=p<=4",
+					_react2.default.createElement("br", null),
+					"e.g.: PLACE 0,0,S or place 0,0,west or place 0,0,w"
+				),
+				_react2.default.createElement(
+					"p",
+					null,
+					"MOVE: Moves robot forward"
+				),
+				_react2.default.createElement(
+					"p",
+					null,
+					"LEFT: Changes direction of robot (not moving it)"
+				),
+				_react2.default.createElement(
+					"p",
+					null,
+					"RIGHT: Changes direction of robot (not moving it)"
+				)
+			)
+		)
+	);
+};
+
+exports.default = Actions;
+
+},{"react":228}],255:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -25411,7 +25486,7 @@ var Cell = function Cell(_ref) {
 
 exports.default = Cell;
 
-},{"react":228}],255:[function(require,module,exports){
+},{"react":228}],256:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -25425,6 +25500,10 @@ var _react2 = _interopRequireDefault(_react);
 var _Cell = require('./Cell.js');
 
 var _Cell2 = _interopRequireDefault(_Cell);
+
+var _Actions = require('./Actions.js');
+
+var _Actions2 = _interopRequireDefault(_Actions);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -25451,56 +25530,14 @@ var Main = function Main(_ref) {
 		_react2.default.createElement(
 			'div',
 			{ className: 'action' },
-			_react2.default.createElement(
-				'h3',
-				null,
-				'Command line'
-			),
-			_react2.default.createElement(
-				'div',
-				{ className: 'command' },
-				_react2.default.createElement(
-					'div',
-					{ className: 'bot' },
-					_react2.default.createElement('input', { placeholder: 'Type commands', value: cmd,
-						onChange: changeInput, onKeyUp: keyPress })
-				),
-				_react2.default.createElement(
-					'div',
-					{ className: 'info' },
-					_react2.default.createElement(
-						'p',
-						null,
-						'PLACE X,Y,F: Places the robot at the X,Y point F facing North,East,West,South or just N,E,W,S',
-						_react2.default.createElement('br', null),
-						'Acceptable range of points are 0<=p<=4',
-						_react2.default.createElement('br', null),
-						'e.g.: PLACE 0,0,S or place 0,0,west or place 0,0,w'
-					),
-					_react2.default.createElement(
-						'p',
-						null,
-						'MOVE: Moves robot forward'
-					),
-					_react2.default.createElement(
-						'p',
-						null,
-						'LEFT: Changes direction of robot (not moving it)'
-					),
-					_react2.default.createElement(
-						'p',
-						null,
-						'RIGHT: Changes direction of robot (not moving it)'
-					)
-				)
-			)
+			_react2.default.createElement(_Actions2.default, { cmd: cmd, changeInput: changeInput, keyPress: keyPress })
 		)
 	);
 };
 
 exports.default = Main;
 
-},{"./Cell.js":254,"react":228}],256:[function(require,module,exports){
+},{"./Actions.js":254,"./Cell.js":255,"react":228}],257:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -25548,6 +25585,9 @@ function mapDispatchToProps(dispatch) {
 		},
 		faceRobot: function faceRobot(face, dir) {
 			dispatch((0, _actions.face_robot)(face, dir));
+		},
+		placeRobot: function placeRobot(coord, face, arr) {
+			dispatch((0, _actions.place_robot)(coord, face, arr));
 		}
 	};
 }
@@ -25612,9 +25652,7 @@ var Main = function (_Component) {
 				switch (arr[0].toLowerCase()) {
 					case "place":
 						arr2 = arr[1].split(",");
-						console.log(arr2[0]);
-						console.log(arr2[1]);
-						console.log(arr2[2]);
+						if (arr2.length == 3) this.props.placeRobot(this.props.coord, this.props.face.toLowerCase()[0], arr2);
 						break;
 					case "move":
 						this.props.moveRobot(this.props.face.toLowerCase()[0]);
@@ -25663,10 +25701,10 @@ var Main = function (_Component) {
 
 exports.default = (0, _reactRedux.connect)(mapStateToProps, mapDispatchToProps)(Main);
 
-},{"../actions.js":253,"../components/Main.js":255,"react":228,"react-redux":176}],257:[function(require,module,exports){
+},{"../actions.js":253,"../components/Main.js":256,"react":228,"react-redux":176}],258:[function(require,module,exports){
 "use strict";
 
-},{}],258:[function(require,module,exports){
+},{}],259:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -25681,7 +25719,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 exports.default = (0, _createBrowserHistory2.default)();
 
-},{"history/createBrowserHistory":27}],259:[function(require,module,exports){
+},{"history/createBrowserHistory":27}],260:[function(require,module,exports){
 'use strict';
 
 var _react = require('react');
@@ -25733,7 +25771,7 @@ function desktop() {
 	), document.getElementById('app'));
 }
 
-},{"./history.js":258,"./reducers":261,"./routes/Main":263,"react":228,"react-dom":41,"react-redux":176,"react-router":199,"redux":235,"redux-thunk":229}],260:[function(require,module,exports){
+},{"./history.js":259,"./reducers":262,"./routes/Main":264,"react":228,"react-dom":41,"react-redux":176,"react-router":199,"redux":235,"redux-thunk":229}],261:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -25746,7 +25784,7 @@ var main = {
 
 exports.default = { main: main };
 
-},{}],261:[function(require,module,exports){
+},{}],262:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -25767,7 +25805,7 @@ var reducer = (0, _redux.combineReducers)({
 
 exports.default = reducer;
 
-},{"./main":262,"redux":235}],262:[function(require,module,exports){
+},{"./main":263,"redux":235}],263:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -25824,6 +25862,17 @@ var state_update = function state_update() {
 				newstate.face = newDir;
 				return newstate;
 			}
+		case "PLACE_ROBOT":
+			{
+				var _coord = newstate.coord.slice();
+				var _face = newstate.face;
+				_coord[0] = action.arr[0];
+				_coord[1] = action.arr[1];
+				_face = action.arr[2].toLowerCase()[0];
+				newstate.coord = _coord;
+				newstate.face = _face;
+				return newstate;
+			}
 		default:
 			return state || _initialState2.default.main;
 	}
@@ -25831,7 +25880,7 @@ var state_update = function state_update() {
 
 exports.default = state_update;
 
-},{"../initialState":260}],263:[function(require,module,exports){
+},{"../initialState":261}],264:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -25858,4 +25907,4 @@ var Main = function Main() {
 
 exports.default = Main;
 
-},{"../containers/Main":256,"react":228}]},{},[259]);
+},{"../containers/Main":257,"react":228}]},{},[260]);

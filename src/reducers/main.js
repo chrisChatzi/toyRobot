@@ -30,6 +30,16 @@ const state_update = (state = init.main, action) => {
 			newstate.face = newDir
 			return newstate
 		}
+		case "PLACE_ROBOT": {
+			let coord = newstate.coord.slice();
+			let face = newstate.face;
+			coord[0] = action.arr[0];
+			coord[1] = action.arr[1];
+			face = action.arr[2].toLowerCase()[0];
+			newstate.coord = coord;
+			newstate.face = face;
+			return newstate
+		}
 		default:
 			return state || init.main
 	}

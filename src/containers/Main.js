@@ -5,7 +5,7 @@
 import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
 import MainC from '../components/Main.js'
-import { input_type, move_robot, face_robot } from '../actions.js' 
+import { input_type, move_robot, face_robot, place_robot } from '../actions.js' 
 
 function mapStateToProps(state) {
 	return {
@@ -24,6 +24,9 @@ function mapDispatchToProps(dispatch) {
 		},
 		faceRobot: (face, dir) => {
 			dispatch(face_robot(face, dir));
+		},
+		placeRobot: (coord, face, arr) => {
+			dispatch(place_robot(coord, face, arr));
 		}
 	};
 }
@@ -75,9 +78,8 @@ class Main extends Component {
 			switch(arr[0].toLowerCase()){
 				case "place":
 					arr2 = arr[1].split(",");
-					console.log(arr2[0])
-					console.log(arr2[1])
-					console.log(arr2[2])
+					if(arr2.length == 3)
+					this.props.placeRobot(this.props.coord, this.props.face.toLowerCase()[0], arr2);
 				break;
 				case "move":
 					this.props.moveRobot(this.props.face.toLowerCase()[0]);
